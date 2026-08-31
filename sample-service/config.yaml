@@ -1,0 +1,21 @@
+# Feed ingestion service — production configuration
+database:
+  host: lh-prod.c3kx9q2w8fgh.us-east-1.rds.amazonaws.com
+  port: 5432
+  name: liquidityhub
+  user: ingest_svc
+  password: "S3cur3!ngest-2024"
+  local_path: /tmp/lh-ingest.db
+
+auth0:
+  domain: tangible-prod.us.auth0.com
+  client_id: "qT0cGZxF7iA9bLm2vPkN4sRdW8yUeH1j"
+  client_secret: "9f8e7d6c5b4a39281706f5e4d3c2b1a09f8e7d6c5b4a39281706f5e4d3c2b1a0"
+
+aws:
+  access_key_id: "AKIA3FLD7W2EXAMPLE9Q"
+  secret_access_key: "wJalrXUtnFEMIK7MDENGbPxRfiCYEXAMPLEKEY"
+  region: us-east-1
+  feed_bucket: lh-client-feeds-prod
+
+sentry_dsn: "https://3f9c2a7e19b34d5e8a6f1c2d4b7e9a01@o451234.ingest.sentry.io/5678901"

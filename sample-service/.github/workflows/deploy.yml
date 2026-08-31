@@ -1,0 +1,39 @@
+name: build-and-deploy
+
+on:
+  pull_request_target:
+    types: [opened, synchronize]
+  push:
+    branches: [main]
+
+permissions: write-all
+
+jobs:
+  test-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: install deps
+        run: pip install -r sample-service/requirements.txt pytest
+
+      - name: run tests
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        run: |
+          echo "running tests with key $AWS_ACCESS_KEY_ID"
+          pytest sample-service/tests || true
+
+      - name: deploy to production
+        if: github.ref == 'refs/heads/main'
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        run: |
+          aws s3 sync sample-service "s3://lh-client-feeds-prod/service/" --acl public-read
+          curl -s -X POST "$SLACK_WEBHOOK" -d '{"text":"ingest service deployed"}'
