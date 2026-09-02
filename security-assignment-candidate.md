@@ -20,7 +20,7 @@ communication the rest of the organization needs from security — clients,
 execs, and ops included. It's the first dedicated security hire, with a path
 to owning the whole function.
 
-## Part 1 — Security review (~70 min)
+## Part 1 — Security review & business judgment (~90 min)
 
 `sample-service/` is a snapshot of an internal feed-ingestion service a
 contractor team delivered last year: a small Flask API that receives nightly
@@ -35,12 +35,23 @@ Review it the way you would if this landed on your desk in week one:
    in any file (the app, the config, the Terraform, the CI workflow — all in
    scope). For each: a title, location (file + line/section), severity with
    one line of justification, a concrete exploit sketch (who can do what,
-   from where, and what they get), and the recommended fix.
+   from where, and what they get), the recommended fix, **business impact**
+   (who loses what if exploited: client data exposure, client trust, revenue,
+   regulatory exposure), and **compliance mapping** (SOC2 Type II / ISO 27001
+   sections this addresses or violates).
 2. **Patch the top two.** Fix the two issues you would fix *first*, in the
    code/config/IaC itself, and be ready to defend why those two. Minimal,
    correct patches — the service must still do its job.
+3. **Executive summary** (≤200 words) — translate the technical findings to
+   board language. What's the overall risk posture? What's the financial or
+   regulatory exposure? What does this mean for client relationships?
+4. **30-day remediation roadmap.** Three concrete changes (priority order) that
+   address the top findings and show program-level thinking — not just the
+   patches, but the process/tooling/staffing shifts needed to prevent similar
+   issues across the platform.
 
-Deliverable: the findings register (markdown is fine) + your patches.
+Deliverable: the findings register (markdown) + your patches + the executive
+summary + the remediation roadmap.
 
 Static review is fine — you don't need to run the service. If you do run it,
 do so only locally.
@@ -81,8 +92,13 @@ come up).
 - Discovery: do you find the real problems, across app code *and* infra *and*
   CI — with exploit reasoning, not scanner output?
 - Severity judgment: do you prioritize by actual exploitability and business
-  impact (tenant data exposure, client trust) rather than checklist order?
+  impact (tenant data exposure, client trust, regulatory risk) rather than
+  checklist order?
+- Business judgment: do you translate technical risk into language that clients
+  and execs understand? Do you connect findings to compliance frameworks?
 - Fix quality: minimal, correct, doesn't break the service.
+- Program thinking: does your remediation roadmap show understanding of how
+  security scales from a single service to a platform?
 - Incident judgment: containment vs. evidence preservation, what you say to
   whom and when, whether you involve legal/compliance, how you handle a
   frightened client.
